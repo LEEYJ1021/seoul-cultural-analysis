@@ -88,32 +88,32 @@ This project utilizes four primary datasets, which are available in the director
 **TABLE A3: REGIONAL CLASSIFICATION LOOKUP (SEOUL_REGIONAL)**
 
 | District (KO) | District (EN)   | Macro Region |
-| ------------- | --------------- | ------------ |
-| 강남구        | Gangnam-gu      | Southeast    |
-| 서초구        | Seocho-gu       | Southeast    |
-| 송파구        | Yongsan-gu      | Southeast    |
-| 강동구        | Songpa-gu       | Southeast    |
-| 성동구        | Seongdong-gu    | Northeast    |
-| 광진구        | Jongno-gu       | Northeast    |
-| 동대문구      | Mapo-gu         | Northeast    |
-| 중랑구        | Jung-gu         | Northeast    |
-| 성북구        | Yangcheon-gu    | Northeast    |
-| 강북구        | Yeongdeungpo-gu | Northeast    |
-| 도봉구        | Seodaemun-gu    | Northeast    |
-| 노원구        | Dongjak-gu      | Northeast    |
-| 종로구        | Gangdong-gu     | Central      |
-| 중구          | Seongbuk-gu     | Central      |
-| 용산구        | Gwangjin-gu     | Central      |
-| 은평구        | Nowon-gu        | Northwest    |
-| 서대문구      | Gangseo-gu      | Northwest    |
-| 마포구        | Dongdaemun-gu   | Northwest    |
-| 양천구        | Guro-gu         | Southwest    |
-| 강서구        | Eunpyeong-gu    | Southwest    |
-| 구로구        | Dobong-gu       | Southwest    |
-| 금천구        | Gwanak-gu       | Southwest    |
-| 영등포구      | Jungnang-gu     | Southwest    |
-| 동작구        | Geumcheon-gu    | Southwest    |
-| 관악구        | Gangbuk-gu      | Southwest    |
+| -------------- | ---------------- | ------------- |
+| 강남구        | Gangnam-gu       | Southeast     |
+| 서초구        | Seocho-gu        | Southeast     |
+| 송파구        | Songpa-gu        | Southeast     |
+| 강동구        | Gangdong-gu      | Southeast     |
+| 성동구        | Seongdong-gu     | Northeast     |
+| 광진구        | Gwangjin-gu      | Northeast     |
+| 동대문구      | Dongdaemun-gu    | Northeast     |
+| 중랑구        | Jungnang-gu      | Northeast     |
+| 성북구        | Seongbuk-gu      | Northeast     |
+| 강북구        | Gangbuk-gu       | Northeast     |
+| 도봉구        | Dobong-gu        | Northeast     |
+| 노원구        | Nowon-gu         | Northeast     |
+| 종로구        | Jongno-gu        | Central       |
+| 중구          | Jung-gu          | Central       |
+| 용산구        | Yongsan-gu       | Central       |
+| 은평구        | Eunpyeong-gu     | Northwest     |
+| 서대문구      | Seodaemun-gu     | Northwest     |
+| 마포구        | Mapo-gu          | Northwest     |
+| 양천구        | Yangcheon-gu     | Southwest     |
+| 강서구        | Gangseo-gu       | Southwest     |
+| 구로구        | Guro-gu          | Southwest     |
+| 금천구        | Geumcheon-gu     | Southwest     |
+| 영등포구      | Yeongdeungpo-gu  | Southwest     |
+| 동작구        | Dongjak-gu       | Southwest     |
+| 관악구        | Gwanak-gu        | Southwest     |
 
 _*Note: The mapping below reproduces the supplied (incorrect) relationships between Korean and English district names and macro-regions for transparency. An authoritative crosswalk (e.g., from Seoul Open Data Plaza metadata) should be used in actual analysis._
 
