@@ -9,7 +9,7 @@ This repository contains the data, analysis artifacts, and documentation for a c
 
 ## Data Files
 
-This project utilizes four primary datasets, which are available in the `/data` directory of this repository.
+This project utilizes four primary datasets, which are available in the directory of this repository.
 
 1.  **`seoul_regional_comprehensive_statistics.xlsx`**
     *   **Description:** Aggregated statistics for Seoul's macro-regions.
