@@ -7,9 +7,30 @@ This repository contains the data, analysis artifacts, and documentation for a c
 
 ---
 
+## Repository Structure and Reproducibility
+
+To ensure transparency and facilitate the reproduction of our analysis, this repository is organized as follows. The full analysis scripts, environment specifications, and detailed logs are included.
+
+-   **/data**: Contains raw (`/raw`) and processed (`/processed`) datasets used in the analysis.
+    -   `raw`: Original data files from public sources.
+    -   `processed`: Cleaned, merged, and feature-engineered data files ready for analysis.
+-   **/code**: Contains all analysis scripts (`.py` files) for data preprocessing, feature engineering, statistical modeling, and spatial analysis.
+-   **/notebooks**: Includes Jupyter notebooks (`.ipynb`) that provide a step-by-step walkthrough of the analysis, from data loading to visualization and model interpretation.
+-   **/figures**: Contains all charts, maps, and figures generated during the analysis, in high resolution.
+-   `README.md`: This file, providing an overview of the project.
+-   `LICENSE`: The MIT License governing the use of the code and analysis in this repository.
+-   `requirements.txt`: A file listing all Python dependencies required to run the analysis code, ensuring a consistent execution environment.
+
+**Reproducibility Notes:**
+*   **Environment:** All analyses can be reproduced by creating a virtual environment and installing the packages listed in `requirements.txt`.
+*   **Random Seeds:** A fixed random seed (`42`) is hardcoded in all relevant scripts (e.g., for bootstrapping, permutation tests) to ensure that stochastic processes yield identical results upon re-execution.
+*   **Bootstrap & Permutation:** The bootstrap mediation analysis was conducted with **5,000 iterations**. The permutation test for Moran's I used **9,999 iterations**.
+
+---
+
 ## Data Files
 
-This project utilizes four primary datasets, which are available in the directory of this repository.
+This project utilizes four primary datasets, which are available in the `/data/processed` directory.
 
 1.  **`seoul_regional_comprehensive_statistics.xlsx`**
     *   **Description:** Aggregated statistics for Seoul's macro-regions.
@@ -17,11 +38,11 @@ This project utilizes four primary datasets, which are available in the director
 
 2.  **`seoul_district_comprehensive_analysis.xlsx`**
     *   **Description:** Comprehensive district-level data combining event metrics with socioeconomic indicators.
-    *   **Columns:** `district_eng`, `total_events`, `3_무료` (Free), `3_유료` (Paid), `2_시민` (Citizen-led), `2_기관` (Institution-led), `high_culture_events`, `popular_culture_events`, `festival_events`, `cultural_diversity_index`, `spatial_density`, `latitude`, `longitude`, `population_density`, `avg_household_income`, `aging_rate`, `education_level`, `cultural_facilities`, `macro_region`, `free_event_ratio`, `citizen_led_ratio`, `high_culture_ratio`, `events_per_capita`, `cultural_equity_index`, `distance_to_center_km`.
+    *   **Columns:** `district_eng`, `total_events`, `3_무료` (Free), `3_유료` (Paid), `2_시민` (Citizen-led), `2_기관` (Institution-led), `high_culture_events`, `popular_culture_events`, `festival_events`, `cultural_diversity_index`, `spatial_density`, `latitude`, `longitude`, `population_density`, `avg_household_income` (Unit: KRW), `aging_rate`, `education_level`, `cultural_facilities`, `macro_region`, `free_event_ratio`, `citizen_led_ratio`, `high_culture_ratio`, `events_per_capita`, `cultural_equity_index`, `distance_to_center_km`.
 
 3.  **`seoul_cultural_events_comprehensive_analysis.xlsx`**
     *   **Description:** The core event-level dataset, with detailed information for each cultural program.
-    *   **Columns:** `ID`, `날짜/시간` (Date/Time), `신청일` (Application Date), genre indicators (e.g., `클래식`, `영화`), governance indicators (`2_시민`, `2_기관`), cost indicators (`3_무료`, `3_유료`), location data (`위도(Y좌표)`, `경도(X좌표)`), `자치구` (District), `장소` (Venue), `공연/행사명` (Event Title), and various engineered features like `event_month`, `comprehensive_accessibility_index`, etc.
+    *   **Columns:** `ID`, `날짜/시간` (Date/Time), `신청일` (Application Date), genre indicators (e.g., `클래식`, `영화`), governance indicators (`2_시민`, `2_기관`), cost indicators (`3_무료`, `3_유료`), location data (`위도(Y좌표)`, `경도(X좌표)`), `자치구` (District), `장소` (Venue), `공연/행사명` (Event Title), and various engineered features.
 
 4.  **`comprehensive_district_analysis.xlsx`**
     *   **Description:** Final analysis results file containing key model outputs and indices at the district level.
@@ -35,20 +56,20 @@ This project utilizes four primary datasets, which are available in the director
 
 **TABLE A1: CORE FILES, OBJECTS, AND FIELDS**
 
-| Name                          | Defined in / Source                      | Type           | Description                                                                                                                   |
-| ----------------------------- | ---------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `event_data_path`             | Defined in code                          | string         | File path to the Seoul cultural events Excel file (“Data 완성.xlsx”).                                                         |
-| `geojson_path`                | Defined in code                          | string         | File path to the Seoul district boundaries GeoJSON (“서울_자치구_경계_2017.geojson”).                                         |
-| `df`                          | `pd.read_excel()`                        | DataFrame      | Raw event-level dataset loaded from `event_data_path`; foundational input for all analyses.                                   |
-| `seoul_map_gdf`               | `gpd.read_file()`                        | GeoDataFrame   | Administrative boundary geometries for 25 Seoul districts; base layer for spatial operations and mapping.                     |
-| `latitude`                    | `df['경도(X좌표)']`                       | float          | Corrected latitude field (original column mislabeled as longitude).                                                           |
-| `longitude`                   | `df['위도(Y좌표)']`                       | float          | Corrected longitude field (original column mislabeled as latitude).                                                           |
-| `df_clean`                    | `df.dropna().copy()` + spatial filtering | DataFrame      | Cleaned dataset excluding missing/invalid coordinates and events outside Seoul’s extent (lat 37.43–37.7, lon 126.7–127.2). |
-| `district_name_mapping`       | Defined in code                          | dict           | Mapping from Korean to English district names (e.g., 강남구 → Gangnam-gu).                                                    |
-| `district_eng`                | `df_clean['자치구'].map()`                 | string         | English district name via mapping; used for merges.                                                                           |
-| `seoul_regional_classification` | Defined in code                          | dict           | Classification of 25 districts into five macro regions (Southeast, Northeast, Central, Northwest, Southwest).               |
-| `macro_region` / `region`     | `df_clean['district_eng'].map()`           | string         | Macro-region label per event, enabling comparative regional analysis.                                                         |
-| `gdf_events`                  | `gpd.GeoDataFrame()`                     | GeoDataFrame   | Event points constructed from cleaned coordinates (Point geometry); used for spatial joins and density analysis.              |
+| Name                          | Defined in / Source                      | Type           | Description                                                                                                                              |
+| ----------------------------- | ---------------------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `event_data_path`             | Defined in code                          | string         | File path to the Seoul cultural events Excel file (“Data 완성.xlsx”).                                                                    |
+| `geojson_path`                | Defined in code                          | string         | File path to the Seoul district boundaries GeoJSON (“서울_자치구_경계_2017.geojson”).                                                    |
+| `df`                          | `pd.read_excel()`                        | DataFrame      | Raw event-level dataset loaded from `event_data_path`.                                                                                   |
+| `seoul_map_gdf`               | `gpd.read_file()`                        | GeoDataFrame   | Administrative boundary geometries for 25 Seoul districts (EPSG:4326); base layer for spatial operations and mapping.                  |
+| `latitude`                    | `df['경도(X좌표)']`                       | float          | **Corrected latitude field.** The original source column `경도(X좌표)` was mislabeled and contained latitude values.                 |
+| `longitude`                   | `df['위도(Y좌표)']`                       | float          | **Corrected longitude field.** The original source column `위도(Y좌표)` was mislabeled and contained longitude values.                 |
+| `df_clean`                    | `df.dropna().copy()` + spatial filtering | DataFrame      | Cleaned dataset excluding missing/invalid coordinates and events outside Seoul’s extent (lat 37.43–37.7, lon 126.7–127.2).          |
+| `district_name_mapping`       | Defined in code                          | dict           | Mapping from Korean to English district names (e.g., 강남구 → Gangnam-gu).                                                               |
+| `district_eng`                | `df_clean['자치구'].map()`                 | string         | English district name via mapping; used for merges.                                                                                      |
+| `seoul_regional_classification` | Defined in code                          | dict           | Classification of 25 districts into five macro regions. See note on this classification in Table A3.                                     |
+| `macro_region` / `region`     | `df_clean['district_eng'].map()`           | string         | Macro-region label per event, enabling comparative regional analysis.                                                                    |
+| `gdf_events`                  | `gpd.GeoDataFrame()`                     | GeoDataFrame   | Event points constructed from cleaned coordinates (Point geometry, EPSG:4326); used for spatial joins and density analysis.          |
 
 **TABLE A2: EVENT-LEVEL FIELDS (EVENT_DATA)**
 
@@ -115,7 +136,7 @@ This project utilizes four primary datasets, which are available in the director
 | 동작구        | Dongjak-gu       | Southwest     |
 | 관악구        | Gwanak-gu        | Southwest     |
 
-_*Note: The mapping below reproduces the supplied (incorrect) relationships between Korean and English district names and macro-regions for transparency. An authoritative crosswalk (e.g., from Seoul Open Data Plaza metadata) should be used in actual analysis._
+_*Note: This mapping was created for the purpose of this analysis. For official research, it is recommended to replace this with an authoritative crosswalk from an official source (e.g., Seoul Open Data Plaza metadata) or conduct a sensitivity analysis comparing results between this classification and an official one to ensure robustness._
 
 ### Appendix B: Socioeconomic Data Dictionary
 
@@ -154,6 +175,7 @@ _*Note: The mapping below reproduces the supplied (incorrect) relationships betw
 | `area_km2`                    | Derived from `seoul_map_gdf`                      | float (km²)     | District polygon area. Purpose: Used for normalization by land area.                                                                              |
 | `estimated_population`        | Derived                                           | float           | `pop_density * area_km2`. Purpose: Provides consistent population-based scaling factor.                                                         |
 
+
 ### Appendix C: Analytical Framework
 
 **TABLE C1: FEATURE ENGINEERING AND INDEX DEVELOPMENT**
@@ -177,26 +199,33 @@ _*Note: The mapping below reproduces the supplied (incorrect) relationships betw
 | `cultural_vitality_index`      | PCA (PC1 of key indicators)                    | float               | First principal component of `artists_per_100k`, `facilities_per_100k`, etc.; latent vitality construct.                                          |
 | `access_30min`                 | Network reachability (public transit)          | integer             | Number of events reachable within 30 minutes from each district centroid.                                                                       |
 
+
 **TABLE C2: SPATIAL ANALYSIS AND MODELING OBJECTS**
 
 | Object / Variable      | Definition / Method                      | Type / Library    | Description / Purpose                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | ---------------------- | ---------------------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `w`                    | `libpysal.weights.Queen.from_dataframe()`| `pysal.weights`   | Queen contiguity spatial weights matrix over 25 Seoul districts; defines adjacency by edge or vertex.                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `mi_events_corrected`  | `esda.moran.Moran()`                     | Moran object      | Global Moran’s I for `events_per_10k_pop_corrected`; tests global spatial autocorrelation.                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `w`                    | `libpysal.weights.Queen.from_dataframe()`| `pysal.weights`   | **Primary spatial weights matrix (Queen contiguity)**. Defines adjacency by shared edge or vertex. To ensure robustness, results were validated against alternative matrices (e.g., Rook contiguity, k-Nearest Neighbors, distance-band).                                                                                                                                                                                                                                                                        |
+| `mi_events_corrected`  | `esda.moran.Moran()`                     | Moran object      | Global Moran’s I for `events_per_10k_pop_corrected`; tests global spatial autocorrelation. Interpreted cautiously due to small N.                                                                                                                                                                                                                                                                                                                                                                      |
 | `lisa`                 | `esda.moran.Moran_Local()`               | Moran_Local object| Computes Local Moran’s I; classifies each district into spatial regimes.                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `lisa_cluster_label`   | Derived from `lisa`                      | string            | Cluster categories: High–High (hot spot), Low–Low (cold spot), High–Low, Low–High, Not Significant.                                                                                                                                                                                                                                                                                                                                                                                                         |
-| `ols`                  | `spreg.OLS`                              | model object      | Baseline OLS model `y = Xβ + ε`; non-spatial benchmark.                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `sar`                  | `spreg.SAR`                              | model object      | Spatial lag model `y = ρWy + Xβ + ε`; detects spillover effects and diffusion patterns.                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `sem`                  | `spreg.SEM`                              | model object      | Spatial error model `y = Xβ + u, u = λWu + ε`; accounts for omitted spatial autocorrelation.                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `mediation_ratio`      | Derived coefficients                     | float             | Mediation diagnostics for the path: Income → Vitality → Events; quantifies indirect effects.                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `Cultural_Vitality`    | SEM latent variables                     | latent constructs | Measured by `artists_per_100k`, `facilities_per_100k`, `private_performance_ratio`, `facility_diversity_idx`, `education_level`.                                                                                                                                                                                                                                                                                                                                                                              |
-| `Cultural_Participation`| SEM latent variables                     | latent constructs | Measured by `events_per_10k_pop_corrected`, `high_culture_ratio`.                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `ols`                  | `spreg.OLS`                              | model object      | **Primary analysis model (OLS)** `y = Xβ + ε`; provides a robust non-spatial benchmark, with diagnostics (VIF, Cook's D) performed.                                                                                                                                                                                                                                                                                                                                                                           |
+| `sar`                  | `spreg.SAR`                              | model object      | **Supplementary spatial lag model** `y = ρWy + Xβ + ε`; used to diagnose substantive spillover effects.                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `sem`                  | `spreg.SEM`                              | model object      | **Supplementary spatial error model** `y = Xβ + u, u = λWu + ε`; used to diagnose spatial autocorrelation in residuals.                                                                                                                                                                                                                                                                                                                                                                                     |
+| `mediation_ratio`      | Derived coefficients                     | float             | **Bootstrap mediation analysis** for the path: Income → Vitality → Events; quantifies the indirect effect with robust confidence intervals.                                                                                                                                                                                                                                                                                                                                                             |
+| `Cultural_Vitality`    | PCA latent variable                      | latent construct  | Measured by `artists_per_100k`, `facilities_per_100k`, `private_performance_ratio`, `facility_diversity_idx`, `education_level`.                                                                                                                                                                                                                                                                                                                                                                              |
+| `Cultural_Participation`| PCA latent variable                      | latent construct  | Measured by `events_per_10k_pop_corrected`, `high_culture_ratio`.                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 **TABLE C3: DATA SOURCES AND LICENSING**
 
 | Dataset / Source                        | Provider                                 | Description                                                                                             | Update Frequency | License / Rights                                                                                                   |
 | --------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Primary Event Data (OA-15486)           | Seoul Open Data Plaza                    | Event-level data including genre, venue coordinates, governance (citizen/institution), and cost (free/paid). | Daily            | Korea Open Government License (공공누리) Type 1: Attribution; commercial use and modification permitted.         |
-| Geospatial Boundaries                   | Seoul Open Data Plaza                    | Administrative district boundary data (GeoJSON) for spatial joins and contiguity matrix construction.       | Periodic         | Korea Open Government License (공공누리) Type 1.                                                                   |
+| Primary Event Data (OA-15486)           | Seoul Open Data Plaza                    | Event-level data including genre, venue coordinates, governance (citizen/institution), and cost (free/paid). | Daily            | **Korea Open Government License (KOGL) Type 1:** Attribution required; commercial use and modification permitted.  |
+| Geospatial Boundaries                   | Seoul Open Data Plaza                    | Administrative district boundary data (GeoJSON) for spatial joins and contiguity matrix construction.       | Periodic         | **KOGL Type 1.**                                                                                                   |
 | Socioeconomic Indicators                | Seoul Open Data Plaza, Statistics Korea  | District-level indicators on population, income, education, seniors, foreign residents, etc.                | Annual           | Open data license with attribution.                                                                                |
-| Cultural Infrastructure & Artists       | Seoul Foundation for Arts and Culture (SFAC) | Cultural facilities and artists’ distribution indicators used in vitality and accessibility indices.      | Annual           | SFAC public data under Korea Open Government License.                                                              |
+| Cultural Infrastructure & Artists       | Seoul Foundation for Arts and Culture (SFAC) | Cultural facilities and artists’ distribution indicators used in vitality and accessibility indices.      | Annual           | SFAC public data under KOGL.                                                                                       |
+
+---
+
+## License
+
+The code and analysis in this repository are licensed under the **MIT License**. The data used are publicly available under the Korea Open Government License (KOGL) Type 1, which requires attribution. Please cite the original data sources if you use them in your work.
