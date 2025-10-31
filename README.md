@@ -11,12 +11,7 @@ This repository contains the data, analysis artifacts, and documentation for a c
 
 To ensure transparency and facilitate the reproduction of our analysis, this repository is organized as follows. The full analysis scripts, environment specifications, and detailed logs are included.
 
--   **/data**: Contains raw (`/raw`) and processed (`/processed`) datasets used in the analysis.
-    -   `raw`: Original data files from public sources.
-    -   `processed`: Cleaned, merged, and feature-engineered data files ready for analysis.
--   **/code**: Contains all analysis scripts (`.py` files) for data preprocessing, feature engineering, statistical modeling, and spatial analysis.
--   **/notebooks**: Includes Jupyter notebooks (`.ipynb`) that provide a step-by-step walkthrough of the analysis, from data loading to visualization and model interpretation.
--   **/figures**: Contains all charts, maps, and figures generated during the analysis, in high resolution.
+-   **notebooks**: Includes Jupyter notebooks (`.ipynb`) that provide a step-by-step walkthrough of the analysis, from data loading to visualization and model interpretation.
 -   `README.md`: This file, providing an overview of the project.
 -   `LICENSE`: The MIT License governing the use of the code and analysis in this repository.
 -   `requirements.txt`: A file listing all Python dependencies required to run the analysis code, ensuring a consistent execution environment.
