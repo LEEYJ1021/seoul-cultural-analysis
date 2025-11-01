@@ -1,9 +1,21 @@
 # seoul-cultural-analysis
-An in-depth analysis of cultural events, accessibility, and spatial equity in Seoul.
+Structural associations and spatial patterns in Seoul's cultural landscape: A cross-sectional analysis with methodological transparency.
 
-# An Analysis of Cultural Equity and Spatial Patterns in Seoul
+# Spatial Analysis of Cultural Inequality in Seoul: Code, Data, and Reproducible Workflows
 
-This repository contains the data, analysis artifacts, and documentation for a comprehensive study on the distribution and accessibility of cultural events across Seoul's 25 districts. The project explores the relationships between socioeconomic factors, cultural infrastructure, and event characteristics to understand the landscape of cultural equity in the city.
+This repository provides complete analytical workflows, diagnostic procedures, and validation scripts for examining structural patterns in cultural event distribution across Seoul's 25 districts. The study examines associations between socioeconomic factors, governance patterns, and spatial accessibility under cross-sectional constraints.
+
+## ⚠️ Methodological Transparency Notice
+
+**Study Limitations Acknowledged in Code:**
+- Cross-sectional design limits causal inference capabilities
+- Small sample size (N=25 districts) affects statistical power, particularly for mediation analysis
+- Bootstrap mediation confidence intervals include zero; results indicate directional tendencies rather than definitive effects
+
+**Reproducibility Standards:**
+- All random processes use fixed seeds (seed=42)
+- Bootstrap procedures: 5,000 iterations
+- Permutation tests: 9,999 iterations 
 
 ---
 
@@ -42,6 +54,21 @@ This project utilizes four primary datasets, which are available in the `/data/p
 4.  **`comprehensive_district_analysis.xlsx`**
     *   **Description:** Final analysis results file containing key model outputs and indices at the district level.
     *   **Columns:** `district_name`, `total_events`, `events_per_10k_pop_corrected`, `cultural_vitality_index`, `avg_income`, `high_culture_ratio`, `citizen_led_ratio`, `access_30min`, `lisa_cluster_label`.
+
+## Data Quality Assurance
+
+### Validation Procedures Implemented
+1. **Coordinate Validation**: Spatial bounds checking (37.43°-37.7°N, 126.7°-127.2°E)
+2. **Cross-source Consistency**: Event counts validated against Seoul Cultural Foundation records
+3. **Temporal Consistency**: Date parsing validation with outlier detection
+4. **Missing Data Assessment**: Comprehensive missingness analysis with MCAR testing
+5. **Outlier Detection**: Multivariate outlier screening using Mahalanobis distance
+
+### Known Data Limitations
+- **Coordinate Labeling**: Original source mislabeled latitude/longitude columns (corrected in preprocessing)
+- **Population Estimates**: 2020 estimates used; some temporal mismatch with 2019 event data
+- **Facility Data**: Private venue undercount possible due to registration requirements
+- **Administrative Changes**: District boundary stability assumed; minor changes not accounted for
 
 ---
 
